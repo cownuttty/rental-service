@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# Файлы, которые создаёт приложение и Jenkins
+instance/
+*.db
+reports/
+dist/
+deploy/
+.coverage
+.pytest_cache/
+
+# IDE
+.idea/
+.vscode/

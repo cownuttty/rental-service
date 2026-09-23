@@ -1,0 +1,3 @@
+[flake8]
+max-line-length = 100
+exclude = venv,.venv,deploy,dist,instance,.git,__pycache__
