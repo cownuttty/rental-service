@@ -11,7 +11,7 @@ def find_conflict(apartment_id, check_in, check_out, exclude_booking_id=None):
     query = (
         "SELECT id FROM bookings "
         "WHERE apartment_id = ? AND status != 'cancelled' "
-        "AND check_in <= ? AND check_out >= ?"
+        "AND check_in < ? AND check_out > ?"
     )
     params = [apartment_id, check_out, check_in]
     if exclude_booking_id is not None:
