@@ -22,9 +22,9 @@ def create_app(config=None):
     with app.app_context():
         init_db()
 
-    from .routes import apartments, bookings, cleaners, clients, owners
+    from .routes import apartments, bookings, cleaners, cleaning_tasks, clients, owners
 
-    for module in (owners, apartments, clients, cleaners, bookings):
+    for module in (owners, apartments, clients, cleaners, bookings, cleaning_tasks):
         app.register_blueprint(module.bp)
 
     @app.get("/health")

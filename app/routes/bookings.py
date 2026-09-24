@@ -4,6 +4,7 @@ from flask import Blueprint, jsonify, request
 from ..db import delete_row, get_db, get_row, insert_row, update_row
 from ..services import find_conflict
 from ..utils import error, get_json_object, is_int, missing_fields, parse_date
+from .cleaning_tasks import create_task_for_booking
 
 bp = Blueprint("bookings", __name__, url_prefix="/bookings")
 
@@ -119,6 +120,8 @@ def update_booking(booking_id):
         values["total_price"] = calc_total(apartment, check_in, check_out)
 
     update_row("bookings", booking_id, values)
+    if values.get("status") == "completed" and booking["status"] != "completed":
+        create_task_for_booking(booking_id)  # гость выехал -> нужна уборка
     return jsonify(dict(get_row("bookings", booking_id)))
 
 
