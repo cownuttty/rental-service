@@ -57,3 +57,5 @@ python -m pytest                  # или: python -m unittest discover -s tests
 
 `Jenkinsfile` описывает pipeline: Setup → Lint → Test для всех веток,
 а для ветки `main` дополнительно Package → Deploy.
+
+
