@@ -55,3 +55,15 @@ CREATE TABLE IF NOT EXISTS bookings (
     created_at   TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CHECK (check_out > check_in)
 );
+
+-- Задачи на уборку (горничные убирают квартиры после выезда гостей)
+CREATE TABLE IF NOT EXISTS cleaning_tasks (
+    id             INTEGER PRIMARY KEY AUTOINCREMENT,
+    apartment_id   INTEGER NOT NULL REFERENCES apartments (id) ON DELETE CASCADE,
+    booking_id     INTEGER REFERENCES bookings (id) ON DELETE SET NULL,
+    cleaner_id     INTEGER REFERENCES cleaners (id) ON DELETE SET NULL,
+    scheduled_date TEXT NOT NULL,          -- дата уборки, YYYY-MM-DD
+    status         TEXT NOT NULL DEFAULT 'planned'
+        CHECK (status IN ('planned', 'in_progress', 'done')),
+    cost           REAL NOT NULL DEFAULT 0 CHECK (cost >= 0)
+);
