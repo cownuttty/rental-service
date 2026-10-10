@@ -81,7 +81,7 @@ def list_tasks():
     if clauses:
         query += " WHERE " + " AND ".join(clauses)
     rows = get_db().execute(query + " ORDER BY scheduled_date, id", params).fetchall()
-    hidden_fields = ("status",)
+    hidden_fields = ("status", "scheduled_date", "service")
     return jsonify([
         {key: value for key, value in dict(row).items() if key not in hidden_fields}
         for row in rows
