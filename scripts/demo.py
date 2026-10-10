@@ -74,7 +74,7 @@ def main():
                 url, "PUT", f"/cleaning-tasks/{tasks[-1]['id']}",
                 {"cleaner_id": cleaner["id"], "cost": 1500}))
     else:
-        print("\n(Задачи на уборку появятся в версии с фичей feature/cleaning-tasks)")
+        print("\n(Задачи на уборку появятся в версии с фичей feature/cleaning-tasks)") 
 
 
 if __name__ == "__main__":
