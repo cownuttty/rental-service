@@ -1,5 +1,3 @@
--- Схема базы данных сервиса посуточной аренды квартир (SQLite).
--- Скрипт выполняется при каждом старте приложения; IF NOT EXISTS делает его безопасным.
 
 -- Собственники квартир
 CREATE TABLE IF NOT EXISTS owners (
@@ -12,7 +10,7 @@ CREATE TABLE IF NOT EXISTS owners (
         CHECK (commission_percent BETWEEN 0 AND 100)
 );
 
--- Квартиры (принадлежат собственнику, сдаются через управляющую компанию)
+-- Квартиры 
 CREATE TABLE IF NOT EXISTS apartments (
     id              INTEGER PRIMARY KEY AUTOINCREMENT,
     owner_id        INTEGER NOT NULL REFERENCES owners (id) ON DELETE RESTRICT,
@@ -56,7 +54,7 @@ CREATE TABLE IF NOT EXISTS bookings (
     CHECK (check_out > check_in)
 );
 
--- Задачи на уборку (горничные убирают квартиры после выезда гостей)
+-- Задачи на уборку 
 CREATE TABLE IF NOT EXISTS cleaning_tasks (
     id             INTEGER PRIMARY KEY AUTOINCREMENT,
     apartment_id   INTEGER NOT NULL REFERENCES apartments (id) ON DELETE CASCADE,
