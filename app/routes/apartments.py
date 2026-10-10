@@ -29,7 +29,7 @@ def validate(data, partial):
             return "missing required fields: " + ", ".join(missing)
     blank = blank_fields(data, ("title", "address"))
     if blank:
-        return "fields must not be empty: " + ", ".join(blank)
+        return "fields must not be empty: " + ", ".join(blank)  
     if "owner_id" in data:
         if not is_int(data["owner_id"]) or get_row("owners", data["owner_id"]) is None:
             return "owner not found"
