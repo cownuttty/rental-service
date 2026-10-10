@@ -1,7 +1,5 @@
-// Jenkinsfile — Declarative Pipeline (Pipeline as Code).
-// Ветки dev и feature/* проходят CI (проверка + тесты), ветка main — CI + CD (упаковка и деплой).
 
-// Небольшой помощник: запускает Python из виртуального окружения и на Windows, и на Linux
+
 def py(String args) {
     if (isUnix()) {
         sh "venv/bin/python ${args}"
@@ -14,15 +12,15 @@ pipeline {
     agent any
 
     options {
-        timestamps()                                   // время в каждой строке лога
-        timeout(time: 20, unit: 'MINUTES')             // сборка не должна висеть вечно
-        disableConcurrentBuilds()                      // не запускать две сборки одной ветки одновременно
-        buildDiscarder(logRotator(numToKeepStr: '10')) // хранить только 10 последних сборок
+        timestamps()                                  
+        timeout(time: 20, unit: 'MINUTES')             
+        disableConcurrentBuilds()                      
+        buildDiscarder(logRotator(numToKeepStr: '10')) 
     }
 
     environment {
-        DEPLOY_DIR = 'deploy'   // куда разворачивать релиз (путь относительно workspace или абсолютный)
-        APP_PORT   = '5000'     // порт, на котором будет работать развёрнутое приложение
+        DEPLOY_DIR = 'deploy'   
+        APP_PORT   = '5000'    
     }
 
     stages {
@@ -48,9 +46,9 @@ pipeline {
         stage('Lint') {
             steps {
                 script {
-                    // 1) критичные ошибки (синтаксис, неопределённые имена, лишние импорты) — сборка падает
+                    
                     py '-m flake8 app tests scripts --count --select=E9,F63,F7,F82,F401,F841 --show-source --statistics'
-                    // 2) замечания по стилю — только показываем, сборку не роняют
+                    
                     py '-m flake8 app tests scripts --exit-zero --max-complexity=10 --statistics'
                 }
             }

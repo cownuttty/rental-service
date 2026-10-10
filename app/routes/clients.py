@@ -1,4 +1,4 @@
-"""Клиенты (арендаторы): CRUD."""
+
 import sqlite3
 
 from flask import Blueprint, jsonify

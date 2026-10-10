@@ -1,4 +1,4 @@
-"""Модульные тесты вспомогательных функций (без HTTP и без БД)."""
+
 import unittest
 from datetime import date
 

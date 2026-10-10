@@ -1,4 +1,4 @@
-"""Сервис управляющей компании по аренде посуточных квартир (REST API на Flask)."""
+
 import os
 
 from flask import Flask, jsonify

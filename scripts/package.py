@@ -1,7 +1,4 @@
-"""Сборка релизного архива: dist/rental-service-<версия>.zip
 
-Запуск:  python scripts/package.py --version 7
-"""
 import argparse
 import zipfile
 from pathlib import Path

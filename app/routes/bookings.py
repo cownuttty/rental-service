@@ -1,4 +1,4 @@
-"""Бронирования: CRUD + бизнес-правила (пересечение дат, вместимость, расчёт стоимости)."""
+
 from flask import Blueprint, jsonify, request
 
 from ..db import delete_row, get_db, get_row, insert_row, update_row

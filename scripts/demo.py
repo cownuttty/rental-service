@@ -1,7 +1,6 @@
-"""Демонстрационный сценарий: создаёт данные через REST API и печатает ответы.
+"""создаёт данные через REST API и печатает ответы.
 
-Запуск (приложение должно быть запущено):
-    python scripts/demo.py                       # http://localhost:5000
+Запуск 
     python scripts/demo.py --url http://localhost:5000
 """
 import argparse

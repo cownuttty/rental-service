@@ -1,4 +1,3 @@
-"""Работа с базой данных SQLite: подключение и небольшие помощники для SQL-запросов."""
 import sqlite3
 
 from flask import current_app, g

@@ -1,4 +1,4 @@
-"""Квартиры: CRUD + проверка доступности на даты."""
+
 import sqlite3
 
 from flask import Blueprint, jsonify, request

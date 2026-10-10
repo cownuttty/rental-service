@@ -1,4 +1,4 @@
-"""Задачи на уборку: CRUD + автоматическое создание после завершения бронирования."""
+
 from flask import Blueprint, jsonify, request
 
 from ..db import delete_row, get_db, get_row, insert_row, update_row

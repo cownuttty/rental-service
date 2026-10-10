@@ -1,4 +1,4 @@
-"""Горничные: CRUD."""
+
 from flask import Blueprint, jsonify
 
 from ..db import delete_row, get_db, get_row, insert_row, update_row

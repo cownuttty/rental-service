@@ -1,4 +1,4 @@
-"""Собственники квартир: CRUD + отчёт о доходе."""
+
 import sqlite3
 
 from flask import Blueprint, jsonify
