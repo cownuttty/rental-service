@@ -68,7 +68,6 @@ def create_task():
 
 @bp.get("")
 def list_tasks():
-    """Фильтры (необязательные): ?cleaner_id=1&apartment_id=2&status=planned&date=2026-10-05"""
     clauses, params = [], []
     for name in ("cleaner_id", "apartment_id", "status"):
         if name in request.args:
@@ -81,7 +80,8 @@ def list_tasks():
     if clauses:
         query += " WHERE " + " AND ".join(clauses)
     rows = get_db().execute(query + " ORDER BY scheduled_date, id", params).fetchall()
-    return jsonify([dict(row) for row in rows])
+    '''return jsonify([dict(row) for row in rows])'''
+    return "Hello, World!"
 
 
 @bp.get("/<int:task_id>")
