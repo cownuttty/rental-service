@@ -80,8 +80,8 @@ def list_tasks():
     if clauses:
         query += " WHERE " + " AND ".join(clauses)
     rows = get_db().execute(query + " ORDER BY scheduled_date, id", params).fetchall()
-    '''return jsonify([dict(row) for row in rows])'''
-    return "Hello, World!"
+    return jsonify([dict(row) for row in rows])
+
 
 
 @bp.get("/<int:task_id>")
