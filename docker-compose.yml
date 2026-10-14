@@ -1,0 +1,36 @@
+services:
+  rental-api:
+    build: ./rental-api
+    container_name: rental-api
+    volumes:
+      - rental_data:/data
+    expose:
+      - "5000"
+    restart: unless-stopped
+    environment:
+      - CLEANING_SERVICE_URL=http://cleaning-service:5001
+
+  cleaning-service:
+    build: ./cleaning-service
+    container_name: cleaning-service
+    volumes:
+      - cleaning_data:/data
+    expose:
+      - "5001"
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: nginx-gateway
+    ports:
+      - "8081:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - rental-api
+      - cleaning-service
+    restart: unless-stopped
+
+volumes:
+  rental_data:
+  cleaning_data:
