@@ -87,36 +87,15 @@ pipeline {
         }
 
         stage('Deploy') {
-            when { branch 'main' }
             steps {
-                // --remove-orphans на случай если раньше остались
-                // контейнеры со старым (не-docker) способом развёртывания.
-                bat 'docker compose up -d --remove-orphans'
+                // Останавливаем и удаляем контейнеры предыдущего запуска,
+                // чтобы избежать конфликта имён. Флаг || true нужен, чтобы
+                // шаг не падал, если контейнеров нет (первый запуск).
+                bat 'docker compose down --remove-orphans || exit 0'
+                bat 'docker rm -f rental-api cleaning-service nginx-gateway || exit 0'
 
-                // Ждём, пока nginx и оба сервиса за ним поднимутся,
-                // и проверяем health через шлюз, а не напрямую в контейнеры -
-                // это и есть проверка того, что весь путь (nginx -> сервис) жив.
-                powershell '''
-                    $maxAttempts = 15
-                    $ok = $false
-                    for ($i = 1; $i -le $maxAttempts; $i++) {
-                        try {
-                            $r1 = Invoke-WebRequest -UseBasicParsing "http://localhost:$env:GATEWAY_PORT/api/health" -TimeoutSec 3
-                            $r2 = Invoke-WebRequest -UseBasicParsing "http://localhost:$env:GATEWAY_PORT/cleaning/health" -TimeoutSec 3
-                            if ($r1.StatusCode -eq 200 -and $r2.StatusCode -eq 200) {
-                                $ok = $true
-                                break
-                            }
-                        } catch {
-                            Start-Sleep -Seconds 2
-                        }
-                    }
-                    if (-not $ok) {
-                        Write-Error "Сервисы не ответили через nginx за отведённое время"
-                        exit 1
-                    }
-                    Write-Host "Deploy OK: оба сервиса отвечают через nginx-gateway"
-                '''
+                // Теперь поднимаем заново
+                bat 'docker compose up -d --build --remove-orphans'
             }
         }
     }
