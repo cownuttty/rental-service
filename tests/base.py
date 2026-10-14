@@ -6,6 +6,8 @@ import unittest
 from app import create_app
 
 
+
+
 class ApiTestCase(unittest.TestCase):
     def setUp(self):
         # Для каждого теста — новая пустая база в отдельной временной папке
