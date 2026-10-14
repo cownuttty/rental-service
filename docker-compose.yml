@@ -1,7 +1,7 @@
 services:
   rental-api:
     build: ./rental-api
-    container_name: rental-api
+    #container_name: rental-api
     volumes:
       - rental_data:/data
     expose:
@@ -12,7 +12,7 @@ services:
 
   cleaning-service:
     build: ./cleaning-service
-    container_name: cleaning-service
+    #container_name: cleaning-service
     volumes:
       - cleaning_data:/data
     expose:
