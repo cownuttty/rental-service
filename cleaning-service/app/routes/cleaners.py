@@ -5,10 +5,24 @@ from app.utils import error, missing_fields
 bp = Blueprint("cleaners", __name__, url_prefix="/cleaners")
 
 
+#@bp.get("")
+#def list_cleaners():
+#    conn = get_connection()
+#    rows = conn.execute("SELECT * FROM cleaners ORDER BY id").fetchall()
+#    conn.close()
+#    return jsonify(rows_to_list(rows))
+
 @bp.get("")
 def list_cleaners():
     conn = get_connection()
-    rows = conn.execute("SELECT * FROM cleaners ORDER BY id").fetchall()
+    rows = conn.execute(
+        "SELECT c.id, c.full_name, c.phone, "
+        "       COUNT(t.id) AS tasks_count "
+        "FROM cleaners c "
+        "LEFT JOIN cleaning_tasks t ON t.cleaner_id = c.id "
+        "GROUP BY c.id "
+        "ORDER BY c.id"
+    ).fetchall()
     conn.close()
     return jsonify(rows_to_list(rows))
 
