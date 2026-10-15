@@ -10,7 +10,6 @@ from app import create_app
 
 class ApiTestCase(unittest.TestCase):
     def setUp(self):
-        # Для каждого теста — новая пустая база в отдельной временной папке
         self._tmp = tempfile.TemporaryDirectory()
         self.app = create_app(
             {"TESTING": True, "DATABASE": os.path.join(self._tmp.name, "test.db")}

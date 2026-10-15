@@ -79,22 +79,15 @@ pipeline {
         stage('Build images') {
             when { branch 'main' }
             steps {
-                // Собираем образы для обоих сервисов. nginx используется
-                // как есть (готовый образ nginx:1.27-alpine), поэтому
-                // пересобирать его не нужно - только подтягивается при up.
                 bat 'docker compose build'
             }
         }
 
         stage('Deploy') {
             steps {
-                // Останавливаем и удаляем контейнеры предыдущего запуска,
-                // чтобы избежать конфликта имён. Флаг || true нужен, чтобы
-                // шаг не падал, если контейнеров нет (первый запуск).
                 bat 'docker compose down --remove-orphans || exit 0'
                 bat 'docker rm -f rental-api cleaning-service nginx-gateway || exit 0'
 
-                // Теперь поднимаем заново
                 bat 'docker compose up -d --build --remove-orphans'
             }
         }
