@@ -10,8 +10,8 @@ def list_tasks():
     conn = get_connection()
     rows = conn.execute("SELECT * FROM cleaning_tasks ORDER BY scheduled_date, id").fetchall()
     conn.close()
-    #return jsonify(rows_to_list(rows))
-    return jsonify([{**row, "note": "для демонстрации"} for row in rows_to_list(rows)])
+    return jsonify(rows_to_list(rows))
+    #return jsonify([{**row, "note": "для демонстрации"} for row in rows_to_list(rows)])
 
 
 @bp.get("/<int:task_id>")
