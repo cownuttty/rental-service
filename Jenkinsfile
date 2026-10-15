@@ -66,20 +66,16 @@ pipeline {
             }
         }
 
-        stage('Test: cleaning-service') {
+                stage('Build images') {
+            when { branch 'main' }
             steps {
-                dir('cleaning-service') {
-                    bat '''
-                        call venv\\Scripts\\activate
-                        set PYTHONPATH=.
-                        pytest tests -v
-                    '''
+                bat 'docker compose build'
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-token', usernameVariable: 'DH_USER', passwordVariable: 'DH_TOKEN')]) {
+                    bat 'echo %DH_TOKEN%| docker login -u %DH_USER% --password-stdin'
+                    bat 'docker compose push'
                 }
             }
         }
-
-        stage('Build images') {
-    
 
         stage('Deploy') {
             steps {
