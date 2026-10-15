@@ -2,10 +2,10 @@ pipeline {
     agent any
 
     options {
-        timestamps() #вывод времени
-        timeout(time: 30, unit: 'MINUTES') #если долго собирается -обрываем
-        disableConcurrentBuilds() # запрет на две сборки одновременно
-        buildDiscarder(logRotator(numToKeepStr: '10')) # история из 10 сборок
+        timestamps() //вывод времени
+        timeout(time: 30, unit: 'MINUTES') //если долго собирается -обрываем
+        disableConcurrentBuilds() //запрет на две сборки одновременно
+        buildDiscarder(logRotator(numToKeepStr: '10')) //история из 10 сборок
     }
 
     environment {
@@ -18,7 +18,7 @@ pipeline {
         stage('Info') {
             steps {
                 echo "Branch: ${env.BRANCH_NAME}"
-                echo "Build: ${env.BUILD_NUMBER}" # какая ветка и номер сборки
+                echo "Build: ${env.BUILD_NUMBER}" //какая ветка и номер сборки
                 bat 'docker --version'
                 bat 'docker compose version'
             }
@@ -77,7 +77,7 @@ pipeline {
         }
 
         stage('Build images') {
-            when { branch 'main' } #только ветка main
+            when { branch 'main' } //только ветка main
             steps {
                 bat 'docker compose build'
             }
