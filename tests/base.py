@@ -19,7 +19,6 @@ class ApiTestCase(unittest.TestCase):
     def tearDown(self):
         self._tmp.cleanup()
 
-    # ---- помощники: создают записи и возвращают их JSON ----
 
     def _create(self, url, payload):
         response = self.client.post(url, json=payload)

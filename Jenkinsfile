@@ -2,10 +2,10 @@ pipeline {
     agent any
 
     options {
-        timestamps()
-        timeout(time: 30, unit: 'MINUTES')
-        disableConcurrentBuilds()
-        buildDiscarder(logRotator(numToKeepStr: '10'))
+        timestamps() #вывод времени
+        timeout(time: 30, unit: 'MINUTES') #если долго собирается -обрываем
+        disableConcurrentBuilds() # запрет на две сборки одновременно
+        buildDiscarder(logRotator(numToKeepStr: '10')) # история из 10 сборок
     }
 
     environment {
@@ -18,7 +18,7 @@ pipeline {
         stage('Info') {
             steps {
                 echo "Branch: ${env.BRANCH_NAME}"
-                echo "Build: ${env.BUILD_NUMBER}"
+                echo "Build: ${env.BUILD_NUMBER}" # какая ветка и номер сборки
                 bat 'docker --version'
                 bat 'docker compose version'
             }
@@ -28,7 +28,7 @@ pipeline {
             steps {
                 dir('rental-api') {
                     bat '''
-                        python -m venv venv
+                        python -m venv venv 
                         call venv\\Scripts\\activate
                         pip install -r requirements-dev.txt
                         flake8 app run.py --select=E9,F63,F7,F82,F401,F841
@@ -77,7 +77,7 @@ pipeline {
         }
 
         stage('Build images') {
-            when { branch 'main' }
+            when { branch 'main' } #только ветка main
             steps {
                 bat 'docker compose build'
             }
