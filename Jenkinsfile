@@ -9,9 +9,11 @@ pipeline {
     }
 
     environment {
-        COMPOSE_PROJECT_NAME = 'rental-service'
-        GATEWAY_PORT = '8081'
-    }
+    COMPOSE_PROJECT_NAME = 'rental-service'
+    GATEWAY_PORT = '8081'
+    DOCKERHUB_USER = 'cownuttty'
+    IMAGE_TAG = "${env.BUILD_NUMBER}"
+}
 
     stages {
 
@@ -77,11 +79,7 @@ pipeline {
         }
 
         stage('Build images') {
-            when { branch 'main' } //только ветка main
-            steps {
-                bat 'docker compose build'
-            }
-        }
+    
 
         stage('Deploy') {
             steps {

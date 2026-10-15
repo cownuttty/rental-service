@@ -1,6 +1,7 @@
 services:
   rental-api:
     build: ./rental-api
+    image: ${DOCKERHUB_USER}/rental-service-rental-api:${IMAGE_TAG:-latest}
     #container_name: rental-api
     volumes:
       - rental_data:/data
@@ -12,25 +13,10 @@ services:
 
   cleaning-service:
     build: ./cleaning-service
+    image: ${DOCKERHUB_USER}/rental-service-cleaning-service:${IMAGE_TAG:-latest}
     #container_name: cleaning-service
     volumes:
       - cleaning_data:/data
     expose:
       - "5001"
     restart: unless-stopped
-
-  nginx:
-    image: nginx:1.27-alpine
-    container_name: nginx-gateway
-    ports:
-      - "8081:80"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-    depends_on:
-      - rental-api
-      - cleaning-service
-    restart: unless-stopped
-
-volumes:
-  rental_data:
-  cleaning_data:
