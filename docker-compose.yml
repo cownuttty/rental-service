@@ -1,16 +1,15 @@
 services:
   rental-api:
-    build: ./rental-api
-    image: ${DOCKERHUB_USER}/rental-service-rental-api:${IMAGE_TAG:-latest}
+    build: ./rental-api #собираем образ из этой папки
+    image: ${DOCKERHUB_USER}/rental-service-rental-api:${IMAGE_TAG:-latest} #имя и тег
     #container_name: rental-api
     volumes:
       - rental_data:/data
     expose:
-      - "5000"
-    restart: unless-stopped
-    environment:
-      - CLEANING_SERVICE_URL=http://cleaning-service:5001
-
+      - "5000" #порт доступен только внутри контейнера
+    restart: unless-stopped #перезапускать при падении-перезагрузке хоста
+    environment: #передача переменной окружения
+      - CLEANING_SERVICE_URL=http://cleaning-service:5001 
   cleaning-service:
     build: ./cleaning-service
     image: ${DOCKERHUB_USER}/rental-service-cleaning-service:${IMAGE_TAG:-latest}
@@ -22,10 +21,10 @@ services:
     restart: unless-stopped
 
   nginx:
-    image: nginx:1.27-alpine
+    image: nginx:1.27-alpine #готовый образ nginx
     container_name: nginx-gateway
     ports:
-      - "8081:80"
+      - "8081:80" #единственная точка входа
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
@@ -33,6 +32,6 @@ services:
       - cleaning-service
     restart: unless-stopped
 
-volumes:
+volumes: #объявление именованных томов
   rental_data:
   cleaning_data:

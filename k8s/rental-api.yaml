@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rental-api
+  labels:
+    app: rental-api
+spec:
+  replicas: 2            # количество реплик - для отказоустойчивости
+  selector:
+    matchLabels:
+      app: rental-api
+  template:
+    metadata:
+      labels:
+        app: rental-api
+    spec:
+      containers:
+        - name: rental-api
+          image: rental-api:latest       # локальный образ, см. инструкцию в чате
+          imagePullPolicy: IfNotPresent   # не ходить в Docker Hub за образом
+          ports:
+            - containerPort: 5000
+          env:
+            - name: CLEANING_SERVICE_URL
+              value: "http://cleaning-service:5001"   # имя k8s Service ниже
+          readinessProbe:                 # когда под считается "готовым принимать трафик"
+            httpGet:
+              path: /health            # внутри пода путь БЕЗ /api - префикс срезает nginx
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:                  # если перестанет отвечать - k8s перезапустит под
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 10
+            periodSeconds: 15
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rental-api        # по этому имени к сервису обращается nginx и cleaning-service внутри кластера
+spec:
+  selector:
+    app: rental-api
+  ports:
+    - port: 5000
+      targetPort: 5000

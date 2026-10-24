@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cleaning-service
+  labels:
+    app: cleaning-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: cleaning-service
+  template:
+    metadata:
+      labels:
+        app: cleaning-service
+    spec:
+      containers:
+        - name: cleaning-service
+          image: cleaning-service:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5001
+          readinessProbe:
+            tcpSocket:               # если у сервиса нет отдельного /health — проверяем просто порт
+              port: 5001
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 5001
+            initialDelaySeconds: 10
+            periodSeconds: 15
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cleaning-service
+spec:
+  selector:
+    app: cleaning-service
+  ports:
+    - port: 5001
+      targetPort: 5001

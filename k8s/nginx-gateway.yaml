@@ -1,0 +1,88 @@
+
+# имена upstream (rental-api, cleaning-service) совпадают с именами
+# Service в кластере (см. остальные файлы k8s/).
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+data:
+  nginx.conf: |
+    events {
+        worker_connections 1024;
+    }
+
+    http {
+        upstream rental_api {
+            server rental-api:5000;
+        }
+
+        upstream cleaning_service {
+            server cleaning-service:5001;
+        }
+
+        server {
+            listen 80;
+
+            location /api/ {
+                rewrite ^/api/(.*)$ /$1 break;
+                proxy_pass http://rental_api;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+            }
+
+            location /cleaning/ {
+                rewrite ^/cleaning/(.*)$ /$1 break;
+                proxy_pass http://cleaning_service;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+            }
+
+            location /health {
+                return 200 "nginx gateway ok\n";
+                add_header Content-Type text/plain;
+            }
+        }
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-gateway
+  labels:
+    app: nginx-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-gateway
+  template:
+    metadata:
+      labels:
+        app: nginx-gateway
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.27-alpine
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf   # как в docker-compose.yml
+              subPath: nginx.conf
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: nginx-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-gateway
+spec:
+  type: NodePort        # чтобы достучаться снаружи кластера, как раньше через localhost
+  selector:
+    app: nginx-gateway
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30081   # итог: http://localhost:30081/api/health

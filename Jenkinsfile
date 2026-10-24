@@ -9,20 +9,20 @@ pipeline {
     }
 
     environment {
-    COMPOSE_PROJECT_NAME = 'rental-service'
-    GATEWAY_PORT = '8081'
-    DOCKERHUB_USER = 'cownuttty'
-    IMAGE_TAG = "${env.BUILD_NUMBER}"
+    COMPOSE_PROJECT_NAME = 'rental-service'  //префикс докер compose
+    GATEWAY_PORT = '8081' //порт шлюза
+    DOCKERHUB_USER = 'cownuttty' 
+    IMAGE_TAG = "${env.BUILD_NUMBER}" // тег - номер сборки
 }
 
     stages {
 
-        stage('Info') {
+        stage('Info') { //сбор контекста сборки в лог(фиксация условий)
             steps {
                 echo "Branch: ${env.BRANCH_NAME}"
                 echo "Build: ${env.BUILD_NUMBER}" //какая ветка и номер сборки
-                bat 'docker --version'
-                bat 'docker compose version'
+                bat 'docker --version' //версия docker engine
+                bat 'docker compose version' //версия docker compose
             }
         }
 
@@ -66,23 +66,23 @@ pipeline {
             }
         }
 
-                stage('Build images') {
+        stage('Build images') {
             when { branch 'main' }
             steps {
-                bat 'docker compose build'
+                bat 'docker compose build' //сбор образов для докер compose
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-token', usernameVariable: 'DH_USER', passwordVariable: 'DH_TOKEN')]) {
-                    bat 'echo %DH_TOKEN%| docker login -u %DH_USER% --password-stdin'
-                    bat 'docker compose push'
+                    bat 'echo %DH_TOKEN%| docker login -u %DH_USER% --password-stdin' //аутентификация в докерхаб
+                    bat 'docker compose push' //пушит
                 }
             }
         }
 
         stage('Deploy') {
             steps {
-                bat 'docker compose down --remove-orphans || exit 0'
-                bat 'docker rm -f rental-api cleaning-service nginx-gateway || exit 0'
+                bat 'docker compose down --remove-orphans || exit 0' //остановить и удалить все контейнеры текущего compose проекта 
+                bat 'docker rm -f rental-api cleaning-service nginx-gateway || exit 0' //удалить все контейнеры по фикс именам
 
-                bat 'docker compose up -d --build --remove-orphans'
+                bat 'docker compose up -d --build --remove-orphans' //сервисы поднимаются в фоне, образы пересобираются
             }
         }
     }
